@@ -4,28 +4,33 @@ import com.correto.correto.Article.Dto.ArticleResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.correto.correto.Article.QArticle.article;
 
+@Slf4j
 @Repository
 public class ArticleQueryRepository extends QuerydslRepositorySupport {
     private final JPAQueryFactory queryFactory;
-
 
     public ArticleQueryRepository(JPAQueryFactory factory) {
         super(Article.class);
         this.queryFactory = factory;
     }
 
-    public ArticleResponseDto filter(LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+    @InitBinder
+    public List<ArticleResponseDto> filter(LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+
         JPQLQuery<ArticleResponseDto> result = queryFactory
                 .select(Projections.fields(ArticleResponseDto.class,
                         article.id, article.title, article.content, article.created_datetime))
@@ -33,15 +38,9 @@ public class ArticleQueryRepository extends QuerydslRepositorySupport {
                 /*생성날짜 기준으로 시작날짜와 마지막날짜 사이의 데이터 조건*/
                 .where(article.created_datetime.between(searchStartDate, searchEndDate))
                 .orderBy(article.id.desc());
-
 //        long totalCnt = result.fetchCount();
 //        List<ArticleResponseDto> list = getQuerydsl().applyPagination(pageable, result).fetch();
 //        return new PageImpl<>(list, pageable, totalCnt);
-        return ArticleResponseDto.builder()
-                .title(result.fetchFirst().getTitle())
-                .content(result.fetchFirst().getContent())
-                .id(result.fetchFirst().getId())
-                .created_datetime(result.fetchFirst().getCreated_datetime())
-                .build();
+        return result.fetch();
     }
 }

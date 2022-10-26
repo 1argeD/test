@@ -6,6 +6,7 @@ import com.correto.correto.Board.Board;
 import com.correto.correto.Board.BoardRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Getter
 @RequiredArgsConstructor
@@ -80,26 +82,16 @@ public class ArticleService {
 
     /*게시글 작성 날짜로 검색하기*/
     @Transactional
-    public ArticleResponseDto searchDate(String searchStartDate, String searchEndDate) {
+    public List<ArticleResponseDto> searchDate(String searchStartDate, String searchEndDate) {
         /*입력값이 공백일 경우*/
-        if (searchStartDate == "") {
-            searchStartDate = "0000-01-01 00:00";
-        }
+        if (searchStartDate.equals("")) searchStartDate = "0001-01-01";
         /*입력값이 공백일 경우*/
-        if (searchEndDate == "") {
-            searchEndDate = "9999-12-31 00:00";
-        }
-        LocalDateTime startDateTime = LocalDate.parse(searchStartDate, DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")).atTime(0, 0, 0);
-        LocalDateTime endDateTime = LocalDate.parse(searchEndDate, DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm")).atTime(23, 59, 59);
+        if (searchEndDate.equals("")) searchEndDate = "9999-12-31";
 
-        queryRepository.filter(startDateTime, endDateTime);
+        LocalDateTime startDateTime = LocalDate.parse(searchStartDate,  DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0,0,0);
+        LocalDateTime endDateTime = LocalDate.parse(searchEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(23,59,59);
 
-        return ArticleResponseDto.builder()
-                .created_datetime(queryRepository.filter(startDateTime, endDateTime).getCreated_datetime())
-                .id(queryRepository.filter(startDateTime, endDateTime).getId())
-                .content(queryRepository.filter(startDateTime, endDateTime).getContent())
-                .title(queryRepository.filter(startDateTime, endDateTime).getTitle())
-                .build();
+        return queryRepository.filter(startDateTime, endDateTime);
     }
 
 }
