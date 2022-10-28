@@ -2,14 +2,8 @@ package com.correto.correto.Article;
 
 import com.correto.correto.Article.Dto.ArticleRequestDto;
 import com.correto.correto.Article.Dto.ArticleResponseDto;
-import com.correto.correto.Board.Board;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.Banner;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +30,9 @@ public class ArticleController {
         log.info(title);
         List<ArticleResponseDto> searchList = articleService.searchTitle(title);
         model.addAttribute("searchList", searchList);
-        return ResponseEntity.ok().body( articleService.searchTitle(title));
+        return ResponseEntity.ok().body(articleService.searchTitle(title));
     }
-
+    /*게시판 이름으로 게시글 검색하기*/
     @GetMapping("/articles/name")
     ResponseEntity<?> searchName(String boardName, Model model) {
         List<ArticleResponseDto> nameList = articleService.searchName(boardName);
@@ -62,7 +56,12 @@ public class ArticleController {
     /*날짜로 검색하기*/
     @GetMapping("/article/date")
     public ResponseEntity<?> searchDate(@RequestParam(value = "searchStartDate", required = false) String searchStartDate,
-                                                   @RequestParam(value = "searchEndDate", required = false) String searchEndDate) {
+                                        @RequestParam(value = "searchEndDate", required = false) String searchEndDate) {
         return ResponseEntity.ok().body(articleService.searchDate(searchStartDate, searchEndDate));
+    }
+    /*게시물 상세 조회*/
+    @GetMapping("/view/{articleId}")
+    public ResponseEntity<?> view(@PathVariable Long articleId) {
+        return ResponseEntity.ok().body(articleService.view(articleId));
     }
 }

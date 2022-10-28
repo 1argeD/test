@@ -7,18 +7,13 @@ import com.correto.correto.Board.BoardRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -94,4 +89,11 @@ public class ArticleService {
         return queryRepository.filter(startDateTime, endDateTime);
     }
 
+
+    @Transactional
+    public ArticleResponseDto view(Long articleId) {
+        Article article = repository.findById(articleId).orElseThrow();
+        article.view();
+        return ArticleResponseDto.Post(article);
+    }
 }

@@ -38,4 +38,8 @@ public void update(ArticleRequestDto articleRequestDto) {
     this.title = articleRequestDto.getTitle();
     this.content = articleRequestDto.getContent();
 }
+
+public void view() {
+    this.viewCount = viewCount + 1;
+}
 }
