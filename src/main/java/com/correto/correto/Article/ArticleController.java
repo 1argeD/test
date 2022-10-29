@@ -27,11 +27,11 @@ public class ArticleController {
     /*제목으로 게시글 찾기*/
     @GetMapping("/articles/title")
     ResponseEntity<?> searchTitle(String title, Model model) {
-        log.info(title);
         List<ArticleResponseDto> searchList = articleService.searchTitle(title);
         model.addAttribute("searchList", searchList);
         return ResponseEntity.ok().body(articleService.searchTitle(title));
     }
+
     /*게시판 이름으로 게시글 검색하기*/
     @GetMapping("/articles/name")
     ResponseEntity<?> searchName(String boardName, Model model) {
@@ -59,6 +59,7 @@ public class ArticleController {
                                         @RequestParam(value = "searchEndDate", required = false) String searchEndDate) {
         return ResponseEntity.ok().body(articleService.searchDate(searchStartDate, searchEndDate));
     }
+
     /*게시물 상세 조회*/
     @GetMapping("/view/{articleId}")
     public ResponseEntity<?> view(@PathVariable Long articleId) {

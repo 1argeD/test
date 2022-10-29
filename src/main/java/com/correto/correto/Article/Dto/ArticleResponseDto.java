@@ -21,6 +21,7 @@ public class ArticleResponseDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime created_datetime;
 
+
     public static ArticleResponseDto Post(Article article) {
         return ArticleResponseDto.builder()
                 .id(article.getId())

@@ -3,6 +3,7 @@ package com.correto.correto.Article;
 import com.correto.correto.Article.Dto.ArticleRequestDto;
 import com.correto.correto.Attachment.Attachment;
 import com.correto.correto.Board.Board;
+import com.correto.correto.Comment.Comment;
 import com.correto.correto.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,9 @@ public class Article extends Timestamped {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comment;
 
 public void update(ArticleRequestDto articleRequestDto) {
     this.title = articleRequestDto.getTitle();
