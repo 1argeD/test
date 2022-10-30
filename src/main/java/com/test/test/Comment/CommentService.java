@@ -28,7 +28,6 @@ public class CommentService {
                 .content(requestDto.getContent())
                 .build();
         commentRepository.save(comment);
-        log.info(comment.toString());
         return CommentResponseDto.comment(comment);
     }
 

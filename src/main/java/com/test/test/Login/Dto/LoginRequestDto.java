@@ -1,4 +1,4 @@
-package com.test.test.Comment.Dto;
+package com.test.test.Login.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentRequestDto {
-    private String content;
+public class LoginRequestDto {
+    private String email;
+    private String password;
 }

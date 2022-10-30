@@ -1,12 +1,12 @@
-package com.test.test.Comment.Dto;
+package com.test.test.SubComment.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class CommentRequestDto {
+@NoArgsConstructor
+public class SubCommentRequestDto {
     private String content;
 }
