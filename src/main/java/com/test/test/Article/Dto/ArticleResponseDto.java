@@ -18,6 +18,7 @@ public class ArticleResponseDto {
     private String title;
     private String content;
     private int viewCnt;
+    private int likeCnt;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime created_datetime;
 
@@ -28,6 +29,7 @@ public class ArticleResponseDto {
                 .title(article.getTitle())
                 .content(article.getContent())
                 .viewCnt(article.getViewCount())
+                .likeCnt(article.getLikeCnt())
                 .created_datetime(article.getCreated_datetime())
                 .build();
     }

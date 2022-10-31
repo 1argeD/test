@@ -49,15 +49,15 @@ public class JwtProvider {
         return refreshToken;
     }
 
-    public String createToken(String MemberEmail, String roles, Long TokenInVailedTime) {
+    public String createToken(String MemberEmail, String roles, Long TokenInvalidedTime) {
         Claims claims = Jwts.claims().setSubject(MemberEmail);
         claims.put("roles", roles);
         Date date = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(date)
-                .setExpiration(new Date(date.getTime() + TokenInVailedTime))
-                .signWith(key, SignatureAlgorithm.HS256)/*해싱 알고리즘 및 키 설저*/
+                .setExpiration(new Date(date.getTime() + TokenInvalidedTime))
+                .signWith(key, SignatureAlgorithm.HS256)/*해싱 알고리즘 및 키 설정*/
                 .compact();
     }
 
@@ -70,6 +70,7 @@ public class JwtProvider {
         }
         return false;
     }
+
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
 
@@ -88,9 +89,9 @@ public class JwtProvider {
         }
     }
 
-    public String createAuthorizationToken(String memverEmail, String roles) {
+    public String createAuthorizationToken(String memberEmail, String roles) {
         Long tokenInvalidedTime = 10000L*60*60;
-        return this.createToken(memverEmail, roles, tokenInvalidedTime);
+        return this.createToken(memberEmail, roles, tokenInvalidedTime);
     }
 
 }

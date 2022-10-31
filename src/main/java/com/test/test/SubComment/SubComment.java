@@ -26,7 +26,13 @@ public class SubComment extends Timestamped {
     @JoinColumn(name = "commentId")
     private Comment comment;
 
+    private int likeCnt;
+
     public void update(SubCommentRequestDto requestDto) {
         this.content = requestDto.getContent();
+    }
+
+    public void like() {
+        this.likeCnt = likeCnt + 1;
     }
 }

@@ -36,4 +36,9 @@ public class SubCommentController {
     {   subCommentService.deleteSubComment(SubCommentId);
         return ResponseEntity.ok().body(Map.of("msg", "삭제 완료"));
     }
+
+    @PostMapping("/subLike/{subCommentId}")
+    public ResponseEntity<?> likeSubComment(@PathVariable Long subCommentId) {
+        return ResponseEntity.ok().body(subCommentService.likeSubComment(subCommentId));
+    }
 }

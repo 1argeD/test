@@ -19,12 +19,14 @@ public class SubCommentResponseDto {
     private Long commentId;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime created_datetime;
+    private int likeCnt;
 
     public static SubCommentResponseDto sub(SubComment subComment) {
         return SubCommentResponseDto.builder()
                 .id(subComment.getId())
                 .commentId(subComment.getComment().getId())
                 .content(subComment.getContent())
+                .likeCnt(subComment.getLikeCnt())
                 .created_datetime(subComment.getCreated_datetime())
                 .build();
     }

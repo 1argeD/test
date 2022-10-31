@@ -52,4 +52,11 @@ public class SubCommentService {
         SubComment subComment = subCommentRepository.findById(SubCommentId).orElseThrow();
         subCommentRepository.delete(subComment);
     }
+
+    @Transactional
+    public SubCommentResponseDto likeSubComment(Long subCommentId) {
+        SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow();
+        subComment.like();
+        return SubCommentResponseDto.sub(subComment);
+    }
 }

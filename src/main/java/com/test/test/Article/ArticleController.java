@@ -65,4 +65,9 @@ public class ArticleController {
     public ResponseEntity<?> view(@PathVariable Long articleId) {
         return ResponseEntity.ok().body(articleService.view(articleId));
     }
+
+    @PostMapping("/articleLike/{articleId}")
+    private ResponseEntity<?> articleLike(@PathVariable Long articleId) {
+        return ResponseEntity.ok().body(articleService.articleLike(articleId));
+    }
 }

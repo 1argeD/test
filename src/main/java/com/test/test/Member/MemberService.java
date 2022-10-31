@@ -3,7 +3,9 @@ package com.test.test.Member;
 import com.test.test.Login.Dto.LoginRequestDto;
 import com.test.test.Login.Dto.LoginResponseDto;
 import com.test.test.Login.Dto.SignupRequestDto;
+import com.test.test.Login.JWT.JwtFilter;
 import com.test.test.Login.JWT.JwtProvider;
+import com.test.test.Login.RefreshToken.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberRepository memberRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public void signup(SignupRequestDto requestDto) {
@@ -63,8 +67,12 @@ public class MemberService {
     }
 
     public void tokenToHeaders(String authorizationToken, String refreshToken, HttpServletResponse response) {
-        response.addHeader("Authorization", "Bearer"+authorizationToken);
+        response.addHeader("Authorization", JwtFilter.BEARER_PREFIX +authorizationToken);
         response.addHeader("RefreshToken", refreshToken);
     }
 
+    @Transactional
+    public void logout(Member member) {
+        refreshTokenRepository.deleteByMember(member);
+    }
 }

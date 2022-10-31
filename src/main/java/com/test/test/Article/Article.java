@@ -28,6 +28,8 @@ public class Article extends Timestamped {
 
     private int viewCount;
 
+    private int likeCnt;
+
     @ManyToOne
     @JoinColumn(name = "boardId")
     private Board board;
@@ -46,4 +48,6 @@ public void update(ArticleRequestDto articleRequestDto) {
 public void view() {
     this.viewCount = viewCount + 1;
 }
+
+public void like() {this.likeCnt = likeCnt + 1;}
 }

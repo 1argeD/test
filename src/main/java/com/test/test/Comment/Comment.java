@@ -31,7 +31,13 @@ public class Comment extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubComment> subComments;
 
+    private int likeCnt;
+
     public void updateComment(CommentRequestDto requestDto) {
         this.content = requestDto.getContent();
+    }
+
+    public void like() {
+        this.likeCnt = likeCnt + 1;
     }
 }

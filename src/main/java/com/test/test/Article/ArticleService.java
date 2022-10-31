@@ -96,4 +96,11 @@ public class ArticleService {
         article.view();
         return ArticleResponseDto.Post(article);
     }
+
+    @Transactional
+    public ArticleResponseDto articleLike(Long articleId) {
+        Article article = repository.findById(articleId).orElseThrow();
+        article.like();
+        return ArticleResponseDto.Post(article);
+    }
 }

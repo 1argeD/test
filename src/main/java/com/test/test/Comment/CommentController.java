@@ -33,4 +33,9 @@ public class CommentController {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().body(Map.of("msg", "댓글 삭제 완료"));
     }
+
+    @PostMapping("/like/{commentId}")
+    public ResponseEntity<?> commentLike(@PathVariable Long commentId) {
+        return ResponseEntity.ok().body(commentService.commentLike(commentId));
+    }
 }

@@ -2,9 +2,11 @@ package com.test.test.Member;
 
 import com.test.test.Login.Dto.LoginRequestDto;
 import com.test.test.Login.Dto.SignupRequestDto;
+import com.test.test.Login.UserDetailsImpl;
 import com.test.test.Member.dto.NicknameCheckRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,5 +41,12 @@ public class MemberController {
     @PostMapping("member/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         return ResponseEntity.ok().body(memberService.login(loginRequestDto, response));
+    }
+
+    @PostMapping("member/logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        memberService.logout(member);
+        return ResponseEntity.ok().body(Map.of("msg","로그아웃 성공"));
     }
 }

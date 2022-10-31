@@ -51,4 +51,11 @@ public class CommentService {
         Comment comment = commentRepository.findById(CommentId).orElseThrow();
         commentRepository.delete(comment);
     }
+
+    @Transactional
+    public CommentResponseDto commentLike(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        comment.like();
+        return CommentResponseDto.comment(comment);
+    }
 }
