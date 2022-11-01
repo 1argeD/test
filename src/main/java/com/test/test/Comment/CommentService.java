@@ -20,6 +20,7 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
 
+    /*코멘트 작성*/
     @Transactional
     public CommentResponseDto createComment(Long articleId, CommentRequestDto requestDto) {
         Article article = articleRepository.findById(articleId).orElseThrow();
@@ -31,6 +32,7 @@ public class CommentService {
         return CommentResponseDto.comment(comment);
     }
 
+    /*코멘트 목록 가져오기*/
     @Transactional
     public List<CommentResponseDto> getComment(Long articleId) {
         List<Comment> comments = commentRepository.findAllByArticle_Id(articleId);
@@ -39,6 +41,7 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    /*코멘트 수정하기*/
     @Transactional
     public CommentResponseDto updateComment(Long CommentId, CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(CommentId).orElseThrow();
@@ -46,12 +49,14 @@ public class CommentService {
         return CommentResponseDto.comment(comment);
     }
 
+    /*코멘트 삭제*/
     @Transactional
     public void deleteComment(Long CommentId) {
         Comment comment = commentRepository.findById(CommentId).orElseThrow();
         commentRepository.delete(comment);
     }
 
+    /*좋아요(추천) 기능*/
     @Transactional
     public CommentResponseDto commentLike(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();

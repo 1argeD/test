@@ -63,15 +63,16 @@ public class ArticleService {
     public List<ArticleResponseDto> searchTitle(String title) {
         List<Article> titleList = repository.findAllByTitleContaining(title);
         return titleList.stream()
-                .map(ArticleResponseDto :: Post)
+                .map(ArticleResponseDto::Post)
                 .collect(Collectors.toList());
     }
 
+    /*게시판 이름으로 검색*/
     @Transactional
     public List<ArticleResponseDto> searchName(String boardName) {
         List<Article> nameList = repository.getArticleByBoard_Name(boardName);
         return nameList.stream()
-                .map(ArticleResponseDto :: Post)
+                .map(ArticleResponseDto::Post)
                 .collect(Collectors.toList());
     }
 
@@ -82,14 +83,14 @@ public class ArticleService {
         if (searchStartDate.equals("")) searchStartDate = "0001-01-01";
         /*입력값이 공백일 경우*/
         if (searchEndDate.equals("")) searchEndDate = "9999-12-31";
-
-        LocalDateTime startDateTime = LocalDate.parse(searchStartDate,  DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0,0,0);
-        LocalDateTime endDateTime = LocalDate.parse(searchEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(23,59,59);
+        /*String 값을 LocalDateTime 으로 변환*/
+        LocalDateTime startDateTime = LocalDate.parse(searchStartDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(0, 0, 0);
+        LocalDateTime endDateTime = LocalDate.parse(searchEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(23, 59, 59);
 
         return queryRepository.filter(startDateTime, endDateTime);
     }
 
-
+    /*게시글 상세 조회*/
     @Transactional
     public ArticleResponseDto view(Long articleId) {
         Article article = repository.findById(articleId).orElseThrow();
@@ -97,6 +98,7 @@ public class ArticleService {
         return ArticleResponseDto.Post(article);
     }
 
+    /*좋아요(추천) 기능*/
     @Transactional
     public ArticleResponseDto articleLike(Long articleId) {
         Article article = repository.findById(articleId).orElseThrow();

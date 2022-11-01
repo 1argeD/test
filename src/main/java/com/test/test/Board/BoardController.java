@@ -25,7 +25,6 @@ public class BoardController {
     /*게시판 이름으로 검색하기*/
     @GetMapping("/boards/search")
     ResponseEntity<?> searchName(String boardName, Model model) {
-        log.info(boardName);
         List<BoardResponseDto> boardList = boardService.searchName(boardName);
         model.addAttribute("board", boardList);
         return ResponseEntity.ok().body(boardService.searchName(boardName));

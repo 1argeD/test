@@ -18,6 +18,7 @@ public class SubCommentService {
     private final SubCommentRepository subCommentRepository;
     private final CommentRepository commentRepository;
 
+    /*대댓 작성*/
     @Transactional
     public SubCommentResponseDto createSubComment(Long commentId, SubCommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();
@@ -32,14 +33,16 @@ public class SubCommentService {
         return SubCommentResponseDto.sub(subComment);
     }
 
+    /*대댓 가져오기*/
     @Transactional
     public List<SubCommentResponseDto> getSubComment(Long commentId) {
-        List<SubComment>subCommentList = subCommentRepository.findAllByComment_Id(commentId);
+        List<SubComment> subCommentList = subCommentRepository.findAllByComment_Id(commentId);
         return subCommentList.stream()
-                .map(SubCommentResponseDto :: sub)
+                .map(SubCommentResponseDto::sub)
                 .collect(Collectors.toList());
     }
 
+    /*대댓 수정*/
     @Transactional
     public SubCommentResponseDto updateSubComment(Long subCommentId, SubCommentRequestDto requestDto) {
         SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow();
@@ -47,12 +50,14 @@ public class SubCommentService {
         return SubCommentResponseDto.sub(subComment);
     }
 
+    /*대댓 삭제*/
     @Transactional
     public void deleteSubComment(Long SubCommentId) {
         SubComment subComment = subCommentRepository.findById(SubCommentId).orElseThrow();
         subCommentRepository.delete(subComment);
     }
 
+    /*좋아요(추천) 기능*/
     @Transactional
     public SubCommentResponseDto likeSubComment(Long subCommentId) {
         SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow();

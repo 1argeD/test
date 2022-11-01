@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final MemberRepository memberRepository;
-
+    /*이메일이 일치하지 않으면 오류 발생*/
     @Override
     public UserDetails loadUserByUsername(String memberEmail) throws UsernameNotFoundException {
         Optional<Member>member = memberRepository.findByEmail(memberEmail);

@@ -17,7 +17,7 @@ import java.util.Collection;
 public class UserDetailsImpl implements UserDetails {
 
     private Member member;
-
+    /*권한 부여*/
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");

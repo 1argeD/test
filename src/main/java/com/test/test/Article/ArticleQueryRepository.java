@@ -26,7 +26,7 @@ public class ArticleQueryRepository extends QuerydslRepositorySupport {
 
     @InitBinder
     public List<ArticleResponseDto> filter(LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
-
+        /*articleReponseDto에 있는 정보로 조회*/
         JPQLQuery<ArticleResponseDto> result = queryFactory
                 .select(Projections.fields(ArticleResponseDto.class,
                         article.id, article.title, article.content, article.created_datetime))

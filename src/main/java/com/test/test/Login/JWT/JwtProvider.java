@@ -88,7 +88,7 @@ public class JwtProvider {
             return e.getClaims();
         }
     }
-
+    /*Authorization 생성*/
     public String createAuthorizationToken(String memberEmail, String roles) {
         Long tokenInvalidedTime = 10000L*60*60;
         return this.createToken(memberEmail, roles, tokenInvalidedTime);

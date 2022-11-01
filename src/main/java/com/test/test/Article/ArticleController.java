@@ -66,6 +66,7 @@ public class ArticleController {
         return ResponseEntity.ok().body(articleService.view(articleId));
     }
 
+    /*좋아요(추천) 기능*/
     @PostMapping("/articleLike/{articleId}")
     private ResponseEntity<?> articleLike(@PathVariable Long articleId) {
         return ResponseEntity.ok().body(articleService.articleLike(articleId));
