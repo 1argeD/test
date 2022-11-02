@@ -1,5 +1,6 @@
 package com.test.test.Member;
 
+import com.test.test.Exception.BadRequestException;
 import com.test.test.Login.Dto.LoginRequestDto;
 import com.test.test.Login.Dto.LoginResponseDto;
 import com.test.test.Login.Dto.SignupRequestDto;
@@ -26,31 +27,31 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
     /*회원가입*/
     @Transactional
-    public void signup(SignupRequestDto requestDto) {
+    public void signup(SignupRequestDto requestDto) throws BadRequestException {
         checkEmailIsDuplication(requestDto.getEmail());
         String encodingPassword = passwordEncoder.encode(requestDto.getPassword());
         Member member = new Member(requestDto.getEmail(), requestDto.getNickname(), encodingPassword);
         memberRepository.save(member);
     }
     /*중복이메일 체크*/
-    public void checkEmailIsDuplication(String email) {
+    public void checkEmailIsDuplication(String email) throws BadRequestException {
         boolean isDuplication = memberRepository.existsByEmail(email);
         if(isDuplication) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+            throw new BadRequestException("이미 존재하는 회원입니다.");
         }
     }
     /*닉네임 중복 체크*/
-    public void checkNicknameIsDuplicate(String nickname) {
+    public void checkNicknameIsDuplicate(String nickname) throws BadRequestException {
         boolean isDuplicate = memberRepository.existsByNickname(nickname);
         if(isDuplicate) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+            throw new BadRequestException("이미 존재하는 닉네임입니다.");
         }
     }
     /*로그인*/
     @Transactional
-    public LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) throws BadRequestException {
         Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
-                .orElseThrow(()-> new IllegalArgumentException("아이디 혹은 비밀 번호를 확인하세요."));
+                .orElseThrow(()-> new BadRequestException("아이디 혹은 비밀 번호를 확인하세요."));
         checkPassword(loginRequestDto.getPassword(), member.getPassword());
 
         String accessToken = jwtProvider.createAuthorizationToken(member.getEmail(), member.getRole());
@@ -59,10 +60,10 @@ public class MemberService {
         return new LoginResponseDto(member.getNickname(), member.getId(), true);
     }
     /*비밀번호 확인*/
-    private void checkPassword(String password, String encodingPassword) {
+    private void checkPassword(String password, String encodingPassword) throws BadRequestException {
         boolean isSome = passwordEncoder.matches(password, encodingPassword);
         if(!isSome) {
-            throw new IllegalArgumentException("아이디 혹은 비밀번호를 확인하세요");
+            throw new BadRequestException("아이디 혹은 비밀번호를 확인하세요");
         }
     }
     /*헤더에 토큰 담기*/

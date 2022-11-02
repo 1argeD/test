@@ -4,6 +4,8 @@ import com.test.test.Article.Dto.ArticleRequestDto;
 import com.test.test.Article.Dto.ArticleResponseDto;
 import com.test.test.Board.Board;
 import com.test.test.Board.BoardRepository;
+import com.test.test.Member.Member;
+import com.test.test.Member.MemberRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +28,14 @@ public class ArticleService {
     private final ArticleQueryRepository queryRepository;
     private final BoardRepository boardRepository;
 
+    private final MemberRepository memberRepository;
+
     /*게시글 생성*/
     @Transactional
-    public ArticleResponseDto createPost(Long id, ArticleRequestDto requestDto) {
+    public ArticleResponseDto createPost(Member member, Long id, ArticleRequestDto requestDto) {
         Board board = boardRepository.findById(id).orElseThrow();
         Article article = Article.builder()
+                .member(member)
                 .board(board)
                 .title(requestDto.getTitle())
                 .content((requestDto.getContent()))
@@ -41,7 +46,10 @@ public class ArticleService {
 
     /*게시글 수정하기 */
     @Transactional
-    public ArticleResponseDto updateArticle(Long articleId, ArticleRequestDto requestDto) {
+    public ArticleResponseDto updateArticle(Member member, Long articleId, ArticleRequestDto requestDto) {
+        memberRepository.findById(member.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
         Article article = repository.findById(articleId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 없습니다.")
         );
@@ -51,7 +59,10 @@ public class ArticleService {
 
     /*게시글 삭제*/
     @Transactional
-    public void deleteArticle(Long articleId) {
+    public void deleteArticle(Member member, Long articleId) {
+        memberRepository.findById(member.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다")
+        );
         Article article = repository.findById(articleId).orElseThrow(
                 () -> new IllegalArgumentException("삭제할 게시물이 존재하지 않습니다.")
         );
@@ -93,15 +104,22 @@ public class ArticleService {
     /*게시글 상세 조회*/
     @Transactional
     public ArticleResponseDto view(Long articleId) {
-        Article article = repository.findById(articleId).orElseThrow();
+        Article article = repository.findById(articleId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 게시글을 조회할 수 없습니다.")
+        );
         article.view();
         return ArticleResponseDto.Post(article);
     }
 
     /*좋아요(추천) 기능*/
     @Transactional
-    public ArticleResponseDto articleLike(Long articleId) {
-        Article article = repository.findById(articleId).orElseThrow();
+    public ArticleResponseDto articleLike(Member member, Long articleId) {
+        memberRepository.findById(member.getId()).orElseThrow(
+                () -> new IllegalArgumentException("로그인 후 이용해주세요")
+        );
+        Article article = repository.findById(articleId).orElseThrow(
+                () -> new IllegalArgumentException("좋아요 할 게시물을 찾을 수 없습니다")
+        );
         article.like();
         return ArticleResponseDto.Post(article);
     }

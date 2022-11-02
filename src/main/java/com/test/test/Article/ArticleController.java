@@ -2,9 +2,12 @@ package com.test.test.Article;
 
 import com.test.test.Article.Dto.ArticleRequestDto;
 import com.test.test.Article.Dto.ArticleResponseDto;
+import com.test.test.Login.UserDetailsImpl;
+import com.test.test.Member.Member;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +22,10 @@ public class ArticleController {
 
     /*게시글 생성하기 */
     @PostMapping("/article/{boardId}")
-    public ResponseEntity<?> createPost(@PathVariable Long boardId,
+    public ResponseEntity<?> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId,
                                         @RequestBody ArticleRequestDto requestDto) {
-        return ResponseEntity.ok().body(articleService.createPost(boardId, requestDto));
+        Member member = userDetails.getMember();
+        return ResponseEntity.ok().body(articleService.createPost(member, boardId, requestDto));
     }
 
     /*제목으로 게시글 찾기*/
@@ -42,14 +46,17 @@ public class ArticleController {
 
     /*게시글 수정하기 */
     @RequestMapping(value = "/article/{articleId}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateArticle(@PathVariable Long articleId, @RequestBody ArticleRequestDto requestDto) {
-        return ResponseEntity.ok().body(articleService.updateArticle(articleId, requestDto));
+    public ResponseEntity<?> updateArticle(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                           @PathVariable Long articleId, @RequestBody ArticleRequestDto requestDto) {
+        Member member = userDetails.getMember();
+        return ResponseEntity.ok().body(articleService.updateArticle(member, articleId, requestDto));
     }
 
     /*게시글 삭제*/
     @DeleteMapping("/article/{articleId}")
-    public ResponseEntity<?> deleteArticle(@PathVariable Long articleId) {
-        articleService.deleteArticle(articleId);
+    public ResponseEntity<?> deleteArticle(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long articleId) {
+        Member member = userDetails.getMember();
+        articleService.deleteArticle(member, articleId);
         return ResponseEntity.ok().body(Map.of("msg", "삭제 완료"));
     }
 
@@ -68,7 +75,8 @@ public class ArticleController {
 
     /*좋아요(추천) 기능*/
     @PostMapping("/articleLike/{articleId}")
-    private ResponseEntity<?> articleLike(@PathVariable Long articleId) {
-        return ResponseEntity.ok().body(articleService.articleLike(articleId));
+    private ResponseEntity<?> articleLike(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long articleId) {
+        Member member = userDetails.getMember();
+        return ResponseEntity.ok().body(articleService.articleLike(member, articleId));
     }
 }

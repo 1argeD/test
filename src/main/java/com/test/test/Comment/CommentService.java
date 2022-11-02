@@ -20,10 +20,13 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
 
+
     /*코멘트 작성*/
     @Transactional
     public CommentResponseDto createComment(Long articleId, CommentRequestDto requestDto) {
-        Article article = articleRepository.findById(articleId).orElseThrow();
+        Article article = articleRepository.findById(articleId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 게시물을 찾을 수 없습니다")
+        );
         Comment comment = Comment.builder()
                 .article(article)
                 .content(requestDto.getContent())
@@ -44,7 +47,9 @@ public class CommentService {
     /*코멘트 수정하기*/
     @Transactional
     public CommentResponseDto updateComment(Long CommentId, CommentRequestDto requestDto) {
-        Comment comment = commentRepository.findById(CommentId).orElseThrow();
+        Comment comment = commentRepository.findById(CommentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 코멘트를 찾을 수 없습니다.")
+        );
         comment.updateComment(requestDto);
         return CommentResponseDto.comment(comment);
     }
@@ -52,14 +57,18 @@ public class CommentService {
     /*코멘트 삭제*/
     @Transactional
     public void deleteComment(Long CommentId) {
-        Comment comment = commentRepository.findById(CommentId).orElseThrow();
+        Comment comment = commentRepository.findById(CommentId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 코멘트를 찾을 수 없습니다.")
+        );
         commentRepository.delete(comment);
     }
 
     /*좋아요(추천) 기능*/
     @Transactional
     public CommentResponseDto commentLike(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 코멘트를 찾을 수 없습니다.")
+        );
         comment.like();
         return CommentResponseDto.comment(comment);
     }

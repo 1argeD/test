@@ -4,6 +4,7 @@ import com.test.test.Article.Dto.ArticleRequestDto;
 import com.test.test.Attachment.Attachment;
 import com.test.test.Board.Board;
 import com.test.test.Comment.Comment;
+import com.test.test.Member.Member;
 import com.test.test.Timestamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,10 @@ public class Article extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "boardId")
     private Board board;
+
+    @ManyToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments;

@@ -1,5 +1,6 @@
 package com.test.test.Member;
 
+import com.test.test.Exception.BadRequestException;
 import com.test.test.Login.Dto.LoginRequestDto;
 import com.test.test.Login.Dto.SignupRequestDto;
 import com.test.test.Login.UserDetailsImpl;
@@ -21,19 +22,19 @@ public class MemberController {
     private final MemberService memberService;
     /*회원가입*/
     @PostMapping("/member/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequestDto requestDto) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequestDto requestDto) throws BadRequestException {
         memberService.signup(requestDto);
         return ResponseEntity.ok().body(Map.of("msg", "회원가입 완료"));
     }
     /*이메일 체크*/
     @PostMapping("/member/emailCheck")
-    public ResponseEntity<?> checkEmail(String email) {
+    public ResponseEntity<?> checkEmail(String email) throws BadRequestException {
         memberService.checkEmailIsDuplication(email);
         return ResponseEntity.ok().body(Map.of("msg", "사용 가능한 이메일입니다."));
     }
     /*닉네임 체크*/
     @PostMapping("/member/nicknameCheck")
-    public ResponseEntity<?>nicknameCheck(@RequestBody NicknameCheckRequestDto requestDto) {
+    public ResponseEntity<?>nicknameCheck(@RequestBody NicknameCheckRequestDto requestDto) throws BadRequestException {
         memberService.checkNicknameIsDuplicate(requestDto.getNickname());
         return ResponseEntity.ok().body(Map.of("msg","사용가능한 닉네입입니다"));
     }
