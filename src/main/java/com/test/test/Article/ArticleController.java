@@ -75,7 +75,7 @@ public class ArticleController {
 
     /*좋아요(추천) 기능*/
     @PostMapping("/articleLike/{articleId}")
-    private ResponseEntity<?> articleLike(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long articleId) {
+    private ResponseEntity<?> articleLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long articleId) {
         Member member = userDetails.getMember();
         return ResponseEntity.ok().body(articleService.articleLike(member, articleId));
     }
