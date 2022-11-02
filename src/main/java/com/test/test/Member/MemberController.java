@@ -40,7 +40,7 @@ public class MemberController {
     }
     /*로그인*/
     @PostMapping("member/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) throws BadRequestException {
         return ResponseEntity.ok().body(memberService.login(loginRequestDto, response));
     }
     /*로그아웃*/

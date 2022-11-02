@@ -78,7 +78,7 @@ public class SubCommentService {
                 () ->new IllegalArgumentException("해당 대댓글이 존재하지 않습니다")
         );
         if(!member.getId().equals(subComment.getMember().getId())){
-            throw new IllegalArgumentException("이 대댓글의 작성자가 아닙니다.")
+            throw new IllegalArgumentException("이 대댓글의 작성자가 아닙니다.");
         }
         subCommentRepository.delete(subComment);
     }
