@@ -33,8 +33,11 @@ public class SubComment extends Timestamped {
 
     private int likeCnt;
 
+    private boolean upDate;
+
     public void update(SubCommentRequestDto requestDto) {
         this.content = requestDto.getContent();
+        this.upDate = true;
     }
 
     public void like() {

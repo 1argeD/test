@@ -37,7 +37,6 @@ public class SubCommentService {
                 .comment(comment)
                 .content(requestDto.getContent())
                 .build();
-
         subCommentRepository.save(subComment);
 
         return SubCommentResponseDto.sub(subComment);

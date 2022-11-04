@@ -24,6 +24,8 @@ public class CommentResponseDto {
 
     private int likeCnt;
 
+    private boolean upDate;
+
     public static CommentResponseDto comment(Comment comment) {
         return CommentResponseDto.builder()
                 .id(comment.getId())
@@ -31,6 +33,7 @@ public class CommentResponseDto {
                 .article_id(comment.getArticle().getId())
                 .likeCnt(comment.getLikeCnt())
                 .created_datetime(comment.getCreated_datetime())
+                .upDate(comment.isUpDate())
                 .build();
     }
 }

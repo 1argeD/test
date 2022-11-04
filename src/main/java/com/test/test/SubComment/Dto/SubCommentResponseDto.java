@@ -20,6 +20,7 @@ public class SubCommentResponseDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime created_datetime;
     private int likeCnt;
+    private boolean upDate;
 
     public static SubCommentResponseDto sub(SubComment subComment) {
         return SubCommentResponseDto.builder()
@@ -28,6 +29,7 @@ public class SubCommentResponseDto {
                 .content(subComment.getContent())
                 .likeCnt(subComment.getLikeCnt())
                 .created_datetime(subComment.getCreated_datetime())
+                .upDate(subComment.isUpDate())
                 .build();
     }
 }

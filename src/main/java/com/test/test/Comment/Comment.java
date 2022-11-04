@@ -38,11 +38,15 @@ public class Comment extends Timestamped {
 
     private int likeCnt;
 
+    private boolean upDate;
+
     public void updateComment(CommentRequestDto requestDto) {
         this.content = requestDto.getContent();
+        this.upDate = true;
     }
 
     public void like() {
         this.likeCnt = likeCnt + 1;
     }
+
 }
