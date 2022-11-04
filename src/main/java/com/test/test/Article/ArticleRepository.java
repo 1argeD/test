@@ -14,4 +14,6 @@ public interface ArticleRepository extends JpaRepository<Article,Long> {
             "where b.name like %:boardName% " )
     List<Article>getArticleByBoard_Name(String boardName);
 
+    List<Article>findAllByMember_Id(Long memberId);
+
 }
