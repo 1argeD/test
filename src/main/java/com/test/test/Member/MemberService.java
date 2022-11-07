@@ -7,13 +7,16 @@ import com.test.test.Login.Dto.SignupRequestDto;
 import com.test.test.Login.JWT.JwtFilter;
 import com.test.test.Login.JWT.JwtProvider;
 import com.test.test.Login.RefreshToken.RefreshTokenRepository;
+import com.test.test.Login.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -53,7 +56,6 @@ public class MemberService {
         Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow(()-> new BadRequestException("아이디 혹은 비밀 번호를 확인하세요."));
         checkPassword(loginRequestDto.getPassword(), member.getPassword());
-
         String accessToken = jwtProvider.createAuthorizationToken(member.getEmail(), member.getRole());
         String refreshToken = jwtProvider.createRefreshToken(member, member.getRole());
         tokenToHeaders(accessToken, refreshToken, response);
@@ -75,5 +77,16 @@ public class MemberService {
     @Transactional
     public void logout(Member member) {
         refreshTokenRepository.deleteByMember(member);
+    }
+
+    @Transactional
+    public void withdraw(UserDetailsImpl userDetails, LoginRequestDto loginRequestDto) throws BadRequestException {
+        Member member = memberRepository.findByEmail(userDetails.getMember().getEmail()).orElseThrow(
+                () -> new BadRequestException("비밀번호를 확인하세요")
+        );
+        if(!passwordEncoder.matches(loginRequestDto.getPassword(), userDetails.getPassword())) {
+            throw new BadRequestException("비밀번호가 일치 하지 않습니다");
+        }
+        memberRepository.deleteById(member.getId());
     }
 }

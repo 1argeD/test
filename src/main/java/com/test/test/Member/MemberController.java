@@ -6,8 +6,10 @@ import com.test.test.Login.Dto.SignupRequestDto;
 import com.test.test.Login.UserDetailsImpl;
 import com.test.test.Member.dto.NicknameCheckRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -49,5 +52,11 @@ public class MemberController {
         Member member = userDetails.getMember();
         memberService.logout(member);
         return ResponseEntity.ok().body(Map.of("msg","로그아웃 성공"));
+    }
+
+    @DeleteMapping("member/withdraw")
+    public ResponseEntity<?> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody LoginRequestDto loginRequestDto) throws BadRequestException {
+        memberService.withdraw(userDetails, loginRequestDto);
+        return ResponseEntity.ok().build();
     }
 }

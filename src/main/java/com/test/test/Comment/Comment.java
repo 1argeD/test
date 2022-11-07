@@ -29,7 +29,7 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "articleId")
     private Article article;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SubComment> subComments;
 
     @ManyToOne
