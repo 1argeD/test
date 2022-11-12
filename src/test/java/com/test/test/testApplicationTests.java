@@ -82,4 +82,12 @@ class testApplicationTests {
 
         articleQueryRepository.filter(start,end);
     }
+
+
+    @Test
+    public void 게시판_이름으로_검색() {
+        String title = "검색어";
+
+        articleRepository.findAllByTitleContaining(title);
+    }
 }
