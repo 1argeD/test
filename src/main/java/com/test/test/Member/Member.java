@@ -48,4 +48,8 @@ public class Member extends Timestamped {
         this.password = password;
         role = "ROLE_USER";
     }
+
+    public void Admin() {
+        this.role = "ROLE_ADMIN";
+    }
 }

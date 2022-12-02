@@ -47,7 +47,7 @@ dependencies {
     //h2
     runtimeOnly 'com.h2database:h2'
     //몽고db
-    implementation ('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
+//    implementation ('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
 }
 
 tasks.named('test') {

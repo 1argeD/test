@@ -89,4 +89,10 @@ public class MemberService {
         }
         memberRepository.deleteById(member.getId());
     }
+
+    @Transactional
+    public void admin(Member member) {
+        Member admin = memberRepository.findById(member.getId()).orElseThrow();
+        admin.Admin();
+    }
 }

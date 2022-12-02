@@ -59,4 +59,11 @@ public class MemberController {
         memberService.withdraw(userDetails, loginRequestDto);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("member/admin")
+    public ResponseEntity<?> admin(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        memberService.admin(member);
+        return ResponseEntity.ok().body(Map.of("msg", "role을 admin으로 변경하였습니다"));
+    }
 }
