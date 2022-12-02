@@ -1,5 +1,6 @@
 package com.test.test.Attachment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.test.test.Article.Article;
 import com.test.test.Timestamped;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class Attachment extends Timestamped {
 
     private String location;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "articleId")
     private Article article;

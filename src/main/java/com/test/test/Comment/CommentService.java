@@ -61,7 +61,9 @@ public class CommentService {
         Comment comment = commentRepository.findById(CommentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 코멘트를 찾을 수 없습니다.")
         );
-        if (!member.getId().equals(comment.getMember().getId())) {
+        if("ROLE_ADMIN".equals(member.getRole())) {
+            comment.updateComment(requestDto);
+        } else if (!member.getId().equals(comment.getMember().getId())) {
             throw new IllegalArgumentException("자신이 작성한 댓글이 아닙니다.");
         }
         comment.updateComment(requestDto);
@@ -77,7 +79,9 @@ public class CommentService {
         Comment comment = commentRepository.findById(CommentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 코멘트를 찾을 수 없습니다.")
         );
-        if (!member.getId().equals(comment.getMember().getId())) {
+        if("ROLE_ADMIN".equals(member.getRole())) {
+            commentRepository.delete(comment);
+        } else if (!member.getId().equals(comment.getMember().getId())) {
             throw new IllegalArgumentException("댓글 작성자가 아닙니다.");
         }
         commentRepository.delete(comment);

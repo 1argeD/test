@@ -3,6 +3,7 @@ package com.test.test.Board;
 
 import com.test.test.Board.Dto.BoardRequestDto;
 import com.test.test.Board.Dto.BoardResponseDto;
+import com.test.test.Member.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,26 @@ public class BoardService {
 
     /*게시판 생성*/
     @Transactional
-    BoardResponseDto createBoard(BoardRequestDto requestDto) {
+    BoardResponseDto createBoard(Member admin, BoardRequestDto requestDto) {
+        if(!"ROLE_ADMIN".equals(admin.getRole())) {
+            throw new IllegalArgumentException("게시판을 생성하기 위해선 관리자 권한이 필요합니다.");
+        }
         Board board = Board.builder()
                 .name(requestDto.getName())
                 .build();
         repository.save(board);
         return BoardResponseDto.BoardP(board);
+    }
+
+    @Transactional
+    public void deleteBoard(Member admin, Long boardId) {
+        if(!"ROLE_ADMIN".equals(admin.getRole())) {
+            throw new IllegalArgumentException("게시판을 삭제하기 위해선 관리자 권한이 필요합니다");
+        }
+        Board board = repository.findById(boardId).orElseThrow(
+                ()-> new IllegalArgumentException("해당 게시판을 찾을 수 없습니다.")
+        );
+        repository.delete(board);
     }
 
     /*게시판 이름으로 검색*/

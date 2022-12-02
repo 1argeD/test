@@ -60,7 +60,9 @@ public class SubCommentService {
         SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 대댓글이 존재하지 않습니다.")
         );
-        if(!member.getId().equals(subComment.getMember().getId())) {
+        if("ROLE_ADMIN".equals(member.getRole())){
+            subComment.update(requestDto);
+        } else if(!member.getId().equals(subComment.getMember().getId())) {
             throw new IllegalArgumentException("대댓글 작성자가 아닙니다.");
         }
         subComment.update(requestDto);
@@ -76,7 +78,9 @@ public class SubCommentService {
         SubComment subComment = subCommentRepository.findById(SubCommentId).orElseThrow(
                 () ->new IllegalArgumentException("해당 대댓글이 존재하지 않습니다")
         );
-        if(!member.getId().equals(subComment.getMember().getId())){
+        if("ROLE_ADMIN".equals(member.getRole())) {
+            subCommentRepository.delete(subComment);
+        }else if(!member.getId().equals(subComment.getMember().getId())){
             throw new IllegalArgumentException("이 대댓글의 작성자가 아닙니다.");
         }
         subCommentRepository.delete(subComment);

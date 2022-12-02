@@ -1,5 +1,6 @@
 package com.test.test.Comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.test.test.Article.Article;
 import com.test.test.Comment.Dto.CommentRequestDto;
 import com.test.test.Member.Member;
@@ -25,6 +26,7 @@ public class Comment extends Timestamped {
 
     private String content;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "articleId")
     private Article article;
@@ -32,6 +34,7 @@ public class Comment extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "comment", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SubComment> subComments;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="memberId")
     private Member member;

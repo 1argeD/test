@@ -1,7 +1,10 @@
 package com.test.test.Board;
 
 import com.test.test.Article.Article;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;

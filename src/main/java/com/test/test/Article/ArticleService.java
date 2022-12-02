@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,6 +54,11 @@ public class ArticleService {
         Article article = repository.findById(articleId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 없습니다.")
         );
+        if("ROLE_ADMIN".equals(member.getRole())){
+            article.update(requestDto);
+        }else if(!member.getId().equals(article.getMember().getId())) {
+            throw new IllegalArgumentException("게시글 작성자가 아닙니다.");
+        }
         article.update(requestDto);
         return ArticleResponseDto.Post(article);
     }
@@ -60,12 +66,17 @@ public class ArticleService {
     /*게시글 삭제*/
     @Transactional
     public void deleteArticle(Member member, Long articleId) {
-        memberRepository.findById(member.getId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다")
-        );
         Article article = repository.findById(articleId).orElseThrow(
                 () -> new IllegalArgumentException("삭제할 게시물이 존재하지 않습니다.")
         );
+        memberRepository.findById(member.getId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다")
+        );
+        if("ROLE_ADMIN".equals(member.getRole())) {
+            repository.delete(article);
+        } else if  (!Objects.equals(article.getMember().getId(), member.getId())) {
+            throw new IllegalArgumentException("게시글 작성자가 아닙니다.");
+        }
         repository.delete(article);
     }
 

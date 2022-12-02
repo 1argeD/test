@@ -1,5 +1,6 @@
 package com.test.test.SubComment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.test.test.Comment.Comment;
 import com.test.test.Member.Member;
 import com.test.test.SubComment.Dto.SubCommentRequestDto;
@@ -23,10 +24,12 @@ public class SubComment extends Timestamped {
 
     private String content;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "commentId")
     private Comment comment;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;

@@ -1,5 +1,6 @@
 package com.test.test.Article;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.test.test.Article.Dto.ArticleRequestDto;
 import com.test.test.Attachment.Attachment;
 import com.test.test.Board.Board;
@@ -31,10 +32,12 @@ public class Article extends Timestamped {
 
     private int likeCnt;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "boardId")
     private Board board;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
