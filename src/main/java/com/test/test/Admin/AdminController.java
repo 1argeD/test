@@ -18,6 +18,7 @@ import java.util.Map;
 public class AdminController {
     private AdminService adminService;
 
+    /* 유저 정보 가져오기 */
     @GetMapping(value = "/admin/memberList")
     ResponseEntity<?> memberList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member admin = userDetails.getMember();
