@@ -92,7 +92,7 @@ public class ArticleService {
     /*게시판 이름으로 검색*/
     @Transactional
     public List<ArticleResponseDto> searchName(String boardName) {
-        List<Article> nameList = repository.getArticleByBoard_Name(boardName);
+        List<Article> nameList = repository.findArticleByBoard_Name(boardName);
         return nameList.stream()
                 .map(ArticleResponseDto::Post)
                 .collect(Collectors.toList());
