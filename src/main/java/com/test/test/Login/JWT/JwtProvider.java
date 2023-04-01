@@ -27,8 +27,7 @@ public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
 
-    public JwtProvider(@Value("${jwt.secret-key}") String SECRET_KEY,
-                       RefreshTokenRepository refreshTokenRepository,
+    public JwtProvider(@Value("${jwt.secret-key}") String SECRET_KEY, RefreshTokenRepository refreshTokenRepository,
                        UserDetailsService userDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         this.key = Keys.hmacShaKeyFor(keyBytes);

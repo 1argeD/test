@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,6 +33,8 @@ public class BoardService {
         return BoardResponseDto.BoardP(board);
     }
 
+
+
     @Transactional
     public void deleteBoard(Member admin, Long boardId) {
         if(!"ROLE_ADMIN".equals(admin.getRole())) {
@@ -46,7 +49,7 @@ public class BoardService {
     /*게시판 이름으로 검색*/
     @Transactional
     public List<BoardResponseDto> searchName(String boardName) {
-        List<Board> nameList = repository.findAllByNameContaining(boardName);
+        Optional<Board> nameList = repository.findAllByNameContaining(boardName);
         log.info(nameList.toString());
         return nameList.stream()
                 .map(BoardResponseDto::BoardP)

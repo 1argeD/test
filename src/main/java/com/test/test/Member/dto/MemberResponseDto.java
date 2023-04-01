@@ -19,6 +19,7 @@ public class MemberResponseDto {
     public static MemberResponseDto memberList(Member member) {
         return MemberResponseDto.builder()
                 .id(member.getId())
+                .nickname(member.getNickname())
                 .email(member.getEmail())
                 .role(member.getRole())
                 .build();

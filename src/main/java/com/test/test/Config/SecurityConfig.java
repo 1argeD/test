@@ -68,7 +68,6 @@ public class SecurityConfig {
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-
                 .apply(new jwtConfig(jwtProvider));/*jwt 필터 설정*/
         return http.build();
     }
