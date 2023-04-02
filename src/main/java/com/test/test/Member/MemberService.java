@@ -8,6 +8,7 @@ import com.test.test.Login.JWT.JwtFilter;
 import com.test.test.Login.JWT.JwtProvider;
 import com.test.test.Login.RefreshToken.RefreshTokenRepository;
 import com.test.test.Login.UserDetailsImpl;
+import com.test.test.Redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final RedisService redisService;
     /*회원가입*/
     @Transactional
     public void signup(SignupRequestDto requestDto) throws BadRequestException {

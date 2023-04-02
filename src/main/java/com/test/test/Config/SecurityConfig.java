@@ -1,7 +1,6 @@
 package com.test.test.Config;
 
 import com.test.test.Login.JWT.JwtProvider;
-import com.test.test.Login.JWT.jwtConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

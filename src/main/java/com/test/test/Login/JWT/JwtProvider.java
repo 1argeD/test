@@ -1,8 +1,10 @@
 package com.test.test.Login.JWT;
 
+import com.test.test.Exception.BadRequestException;
 import com.test.test.Login.RefreshToken.RefreshToken;
 import com.test.test.Login.RefreshToken.RefreshTokenRepository;
 import com.test.test.Member.Member;
+import com.test.test.Redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 
 @Slf4j
@@ -27,16 +30,25 @@ public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
 
-    public JwtProvider(@Value("${jwt.secret-key}") String SECRET_KEY, RefreshTokenRepository refreshTokenRepository,
-                       UserDetailsService userDetailsService) {
+    private final RedisService redisService;
+
+    @Value("${jwt.blacklist.access-token}")
+    private String blackListATPrefix;
+
+
+    public JwtProvider(@Value("${jwt.secret-key}") String SECRET_KEY,
+                       RefreshTokenRepository refreshTokenRepository,
+                       UserDetailsService userDetailsService,
+                       RedisService redisService) {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        this.redisService = redisService;//redis 추가
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.refreshTokenRepository = refreshTokenRepository;
         this.userDetailsService = userDetailsService;
     }
 
     public String createRefreshToken(Member member, String roles) {
-        Long tokenInvalidedTime = 10000L*60*60*24;
+        long tokenInvalidedTime = 10000L*60*60*24;
         String refreshToken = this.createToken(member.getEmail(), roles, tokenInvalidedTime);
 
         RefreshToken refreshTokenObject = refreshTokenRepository.findByMember(member)
@@ -45,7 +57,21 @@ public class JwtProvider {
                         .build());
         refreshTokenObject.updateTokenValue(refreshToken);
         refreshTokenRepository.save(refreshTokenObject);
+        redisService.setValues(member.getEmail(), member.getRole(), Duration.ofMillis(tokenInvalidedTime));
+
         return refreshToken;
+    }
+
+    public void logout(String email, String accessToken) {
+        long expireAccessTokenTime = getExpiredTime(accessToken).getTime() - new Date().getTime();
+        redisService.setValues(blackListATPrefix + accessToken, email, Duration.ofMillis(expireAccessTokenTime));
+        redisService.deleteValues(email);
+    }
+    public void checkRefreshToken(String email, String refreshToken) throws BadRequestException {
+        String redisRT = redisService.getValues(email);
+        if(!refreshToken.equals(redisRT)) {
+            throw new BadRequestException("토큰이 만료 되었습니다.");
+        }
     }
 
     public String createToken(String MemberEmail, String roles, Long TokenInvalidedTime) {
@@ -91,6 +117,10 @@ public class JwtProvider {
     public String createAuthorizationToken(String memberEmail, String roles) {
         Long tokenInvalidedTime = 10000L*60*60;
         return this.createToken(memberEmail, roles, tokenInvalidedTime);
+    }
+
+    private Date getExpiredTime(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
     }
 
 }

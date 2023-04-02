@@ -1,6 +1,8 @@
-package com.test.test.Login.JWT;
+package com.test.test.Config;
 
 
+import com.test.test.Login.JWT.JwtFilter;
+import com.test.test.Login.JWT.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
