@@ -1,5 +1,6 @@
 package com.test.test.Config;
 
+import com.test.test.Login.JWT.JwtFilter;
 import com.test.test.Login.JWT.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -67,7 +69,7 @@ public class SecurityConfig {
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new jwtConfig(jwtProvider));/*jwt 필터 설정*/
+                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);/*jwt 필터 설정*/
         return http.build();
     }
 }

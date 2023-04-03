@@ -78,8 +78,8 @@ public class MemberService {
     }
     /*로그아웃*/
     @Transactional
-    public void logout(Member member) {
-        refreshTokenRepository.deleteByMember(member);
+    public void logout(Member member, String accessToken) throws BadRequestException {
+        jwtProvider.logout(member, accessToken);
     }
 
     @Transactional

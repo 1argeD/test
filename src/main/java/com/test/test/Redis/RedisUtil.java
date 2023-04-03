@@ -35,11 +35,15 @@ public class RedisUtil {
         redisBlackListTemplate.opsForValue().set(key, o, milliSeconds, TimeUnit.MINUTES);
     }
 
+    public Object getBlackList(String key) {
+        return redisBlackListTemplate.opsForValue().get(key);
+    }
+
     public boolean deleteBlackList(String key) {
         return Boolean.TRUE.equals(redisBlackListTemplate.delete(key));
     }
 
-    public boolean deleteHasKey(String key) {
+    public boolean hasKeyBlackList(String key) {
         return Boolean.TRUE.equals(redisBlackListTemplate.hasKey(key));
     }
 }

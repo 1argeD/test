@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
@@ -48,9 +49,9 @@ public class MemberController {
     }
     /*로그아웃*/
     @PostMapping("member/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) throws BadRequestException {
         Member member = userDetails.getMember();
-        memberService.logout(member);
+        memberService.logout(member, request.getHeader("Authorization").substring(7));
         return ResponseEntity.ok().body(Map.of("msg","로그아웃 성공"));
     }
 

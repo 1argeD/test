@@ -5,6 +5,7 @@ import com.test.test.Login.RefreshToken.RefreshToken;
 import com.test.test.Login.RefreshToken.RefreshTokenRepository;
 import com.test.test.Member.Member;
 import com.test.test.Redis.RedisService;
+import com.test.test.Redis.RedisUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -31,16 +32,16 @@ public class JwtProvider {
     private final UserDetailsService userDetailsService;
 
     private final RedisService redisService;
-
-    @Value("${jwt.blacklist.access-token}")
-    private String blackListATPrefix;
+    private final RedisUtil redisUtil;
 
 
     public JwtProvider(@Value("${jwt.secret-key}") String SECRET_KEY,
                        RefreshTokenRepository refreshTokenRepository,
                        UserDetailsService userDetailsService,
-                       RedisService redisService) {
+                       RedisService redisService,
+                       RedisUtil redisUtil) {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        this.redisUtil = redisUtil;
         this.redisService = redisService;//redis 추가
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.refreshTokenRepository = refreshTokenRepository;
@@ -56,17 +57,22 @@ public class JwtProvider {
                         .member(member)
                         .build());
         refreshTokenObject.updateTokenValue(refreshToken);
-        refreshTokenRepository.save(refreshTokenObject);
         redisService.setValues(member.getEmail(), member.getRole(), Duration.ofMillis(tokenInvalidedTime));
 
         return refreshToken;
     }
 
-    public void logout(String email, String accessToken) {
-        long expireAccessTokenTime = getExpiredTime(accessToken).getTime() - new Date().getTime();
-        redisService.setValues(blackListATPrefix + accessToken, email, Duration.ofMillis(expireAccessTokenTime));
-        redisService.deleteValues(email);
+    public void logout(Member member, String accessToken) throws BadRequestException {
+        if(!validateToken(accessToken)) {
+            throw new BadRequestException("옳지 않은 토큰입니다.");
+        }
+        redisService.deleteValues(member.getEmail());
+
+        long expiration = getExpiredTime(accessToken);
+        redisUtil.setBlackList(accessToken, "accessToken", expiration);
     }
+
+/*리 이슈 문제떄 사용할 로직*/
     public void checkRefreshToken(String email, String refreshToken) throws BadRequestException {
         String redisRT = redisService.getValues(email);
         if(!refreshToken.equals(redisRT)) {
@@ -89,12 +95,13 @@ public class JwtProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            return !redisUtil.hasKeyBlackList(token);
         } catch ( SecurityException | MalformedJwtException e) {
             log.info("Jwt claims is empty, 잘못된 JWT 토큰 입니다.");
         }
         return false;
     }
+
 
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
@@ -119,8 +126,11 @@ public class JwtProvider {
         return this.createToken(memberEmail, roles, tokenInvalidedTime);
     }
 
-    private Date getExpiredTime(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
+    private Long getExpiredTime(String token) {
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
+
+        long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 
 }
